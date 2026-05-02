@@ -1,93 +1,117 @@
-const app = {
-    state: {
-        points: 0,
-        currentTab: 'inicio',
-        atom: { p: 0, n: 0, e: 0 },
-        progress: 0
-    },
+/**
+ * QuimiLab - Motor de Reacciones
+ * Enfoque: Secundaria - Enlaces Químicos
+ */
 
-    init() {
-        this.bindEvents();
-        this.renderPeriodicTable();
-        this.updateUI();
-    },
+const QuimiLab = (() => {
+    // Estado de la aplicación
+    const state = {
+        currentElements: [],
+        energy: 100,
+        score: 0
+    };
 
-    bindEvents() {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.switchTab(e.target.dataset.tab);
-            });
-        });
-    },
+    // Diccionario de datos químicos (Abstracción didáctica)
+    const elementData = {
+        'Na': { type: 'metal', valencia: 1 },
+        'Cl': { type: 'non-metal', valencia: 7 },
+        'Mg': { type: 'metal', valencia: 2 },
+        'O':  { type: 'non-metal', valencia: 6 }
+    };
 
-    switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        
-        document.getElementById(tabId).classList.add('active');
-        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-        
-        this.state.currentTab = tabId;
-        this.addPoints(5); // Recompensa por exploración
-    },
+    const init = () => {
+        setupEventListeners();
+    };
 
-    addPoints(pts) {
-        this.state.points += pts;
-        this.state.progress = Math.min(this.state.progress + 2, 100);
-        this.updateUI();
-    },
-
-    updateUI() {
-        document.getElementById('score').innerText = `Puntos: ${this.state.points}`;
-        document.getElementById('progress-bar').style.width = `${this.state.progress}%`;
-        
-        const rankMsg = this.state.points > 100 ? "Científico Senior" : "Recluta";
-        document.getElementById('rank').innerText = `Rango: ${rankMsg}`;
-    },
-
-    // Lógica del Laboratorio de Átomos
-    addParticle(type) {
-        this.state.atom[type]++;
-        const info = document.getElementById('atom-info');
-        const {p, e} = this.state.atom;
-        
-        let carga = p - e;
-        let tipoCarga = carga === 0 ? "Neutro" : (carga > 0 ? "Catión" : "Anión");
-        
-        info.innerHTML = `Partículas -> P:${p} | E:${e} <br> <strong>Estado: ${tipoCarga} (${carga})</strong>`;
-        
-        // Retroalimentación inmediata
-        this.showFeedback(`¡Partícula ${type} añadida al núcleo!`, "success");
-    },
-
-    showFeedback(msg, type) {
-        const bar = document.getElementById('feedback-msg');
-        bar.innerText = msg;
-        bar.style.color = type === "success" ? "var(--accent-green)" : "orange";
-    },
-
-    renderPeriodicTable() {
-        const container = document.getElementById('periodic-table');
-        const elements = [
-            {s: 'H', n: 'Hidrógeno', z: 1, c: 'Gas'},
-            {s: 'He', n: 'Helio', z: 2, c: 'Noble'},
-            {s: 'Li', n: 'Litio', z: 3, c: 'Metal'},
-            // ... Se pueden expandir más elementos aquí
-        ];
+    const setupEventListeners = () => {
+        const elements = document.querySelectorAll('.element-item');
+        const dropZone = document.getElementById('drop-zone');
 
         elements.forEach(el => {
-            const div = document.createElement('div');
-            div.className = 'el-card';
-            div.innerHTML = `<strong>${el.s}</strong><br>${el.z}`;
-            div.onclick = () => {
-                document.getElementById('element-detail').innerHTML = 
-                    `<h3>${el.n} (${el.s})</h3><p>Número Atómico: ${el.z}. Uso común: ${el.c}.</p>`;
-                this.addPoints(2);
-            };
-            container.appendChild(div);
+            el.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.dataset.element);
+            });
         });
-    }
-};
 
-// Iniciar aplicación al cargar
-window.onload = () => app.init();
+        dropZone.addEventListener('dragover', (e) => e.preventDefault());
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const symbol = e.dataTransfer.getData('text/plain');
+            handleElementDrop(symbol);
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', resetLab);
+    };
+
+    const handleElementDrop = (symbol) => {
+        if (state.currentElements.length < 2) {
+            state.currentElements.push(symbol);
+            updateVisuals();
+            
+            if (state.currentElements.length === 2) {
+                processReaction();
+            }
+        }
+    };
+
+    const processReaction = () => {
+        const [el1, el2] = state.currentElements;
+        const data1 = elementData[el1];
+        const data2 = elementData[el2];
+        
+        let resultMsg = "";
+        let success = false;
+
+        // Lógica Pedagógica de Enlaces
+        if (data1.type !== data2.type) {
+            resultMsg = `¡Éxito! Enlace IÓNICO formado entre ${el1} y ${el2}.`;
+            success = true;
+        } else if (data1.type === 'non-metal' && data2.type === 'non-metal') {
+            resultMsg = `¡Éxito! Enlace COVALENTE formado entre ${el1} y ${el2}.`;
+            success = true;
+        } else {
+            resultMsg = `Falla: Los metales no suelen formar enlaces estables entre sí.`;
+            success = false;
+        }
+
+        updateLog(resultMsg, success);
+        if (success) updateProgress();
+        
+        // Pequeña pausa para permitir que el estudiante vea el resultado antes de limpiar
+        setTimeout(resetLab, 3000);
+    };
+
+    const updateLog = (msg, success) => {
+        const history = document.getElementById('reaction-history');
+        const entry = document.createElement('li');
+        entry.textContent = msg;
+        entry.style.color = success ? 'green' : 'red';
+        entry.style.fontWeight = 'bold';
+        history.prepend(entry);
+    };
+
+    const updateProgress = () => {
+        state.score += 20;
+        state.energy = Math.max(0, state.energy - 5);
+        document.getElementById('energy-points').textContent = state.energy;
+        if(state.score > 40) document.getElementById('user-rank').textContent = 'Investigador';
+    };
+
+    const updateVisuals = () => {
+        const chamber = document.getElementById('reaction-visuals');
+        chamber.innerHTML = state.currentElements.map(el => 
+            `<div class="atom-preview">${el}</div>`
+        ).join(' + ');
+    };
+
+    const resetLab = () => {
+        state.currentElements = [];
+        document.getElementById('reaction-visuals').innerHTML = "";
+    };
+
+    return { init };
+})();
+
+// Iniciar al cargar el DOM
+document.addEventListener('DOMContentLoaded', QuimiLab.init);
