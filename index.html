@@ -3,81 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quimiverso: Misión 8°</title>
+    <title>QuimiLab - Laboratorio de Enlaces Químicos</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="main-header">
-        <div class="logo">⚛️ QUIMIVERSO</div>
-        <div class="user-stats">
-            <span id="rank">Rango: Recluta</span>
-            <div class="progress-container">
-                <div id="progress-bar" class="progress-bar"></div>
-            </div>
-            <span id="score">Puntos: 0</span>
+    <header class="app-header">
+        <h1>QuimiLab: Misión Enlaces</h1>
+        <div class="stats-panel" aria-live="polite">
+            <span>Energía: <strong id="energy-points">100</strong></span>
+            <span>Rango: <strong id="user-rank">Novato</strong></span>
         </div>
     </header>
 
-    <main class="app-container">
-        <!-- Navegación por Módulos -->
-        <nav class="side-nav" role="navigation" aria-label="Menú de misiones">
-            <button class="nav-btn active" data-tab="inicio">🚀 Inicio</button>
-            <button class="nav-btn" data-tab="atomo">🔬 El Átomo</button>
-            <button class="nav-btn" data-tab="tabla">📅 Tabla Periódica</button>
-            <button class="nav-btn" data-tab="enlaces">🔗 Enlaces</button>
-            <button class="nav-btn" data-tab="laboratorio">🧪 Lab Virtual</button>
-            <button class="nav-btn" data-tab="evaluacion">🏆 Evaluación</button>
-        </nav>
+    <main class="main-container">
+        <!-- Área de Instrucciones Pedagógicas -->
+        <section class="instructions-card" aria-labelledby="instr-title">
+            <h2 id="instr-title">Reto del Investigador</h2>
+            <p>Tu misión es formar compuestos estables. Arrastra los elementos al núcleo de reacción y observa cómo interactúan sus electrones de valencia.</p>
+        </section>
 
-        <!-- Contenido Dinámico -->
-        <section class="content-area">
-            <!-- Pestaña Inicio -->
-            <div id="inicio" class="tab-content active">
-                <div class="hero-section">
-                    <h1>Bienvenido, Investigador</h1>
-                    <p>El equilibrio químico de la ciudad está en peligro. Tu misión es dominar la materia para restaurar el orden.</p>
-                    <button class="cta-btn" onclick="app.nextTab('atomo')">Comenzar Misión</button>
+        <!-- Laboratorio Interactivo -->
+        <section class="lab-area">
+            <div class="element-shelf" id="element-palette">
+                <h3>Elementos Disponibles</h3>
+                <div class="elements-grid">
+                    <button class="element-item metal" data-element="Na" draggable="true" aria-label="Sodio">Na</button>
+                    <button class="element-item non-metal" data-element="Cl" draggable="true" aria-label="Cloro">Cl</button>
+                    <button class="element-item metal" data-element="Mg" draggable="true" aria-label="Magnesio">Mg</button>
+                    <button class="element-item non-metal" data-element="O" draggable="true" aria-label="Oxígeno">O</button>
                 </div>
             </div>
 
-            <!-- Pestaña El Átomo (Simulador Simple integrado) -->
-            <div id="atomo" class="tab-content">
-                <h2>Constructor Atómico</h2>
-                <div class="sim-container">
-                    <div class="atom-visualizer" id="atom-view">
-                        <!-- Representación del núcleo y electrones aquí -->
-                        <div id="nucleus" class="nucleus"></div>
-                        <div id="orbit-1" class="orbit"></div>
-                    </div>
-                    <div class="controls">
-                        <h3>Añadir Partículas</h3>
-                        <button onclick="app.addParticle('p')">Protón (+)</button>
-                        <button onclick="app.addParticle('n')">Neutrón (o)</button>
-                        <button onclick="app.addParticle('e')">Electrón (-)</button>
-                        <div class="info-box" id="atom-info">
-                            Átomo: Neutro | Z: 0
-                        </div>
-                    </div>
-                </div>
+            <div class="reaction-chamber" id="drop-zone" role="region" aria-label="Cámara de reacción">
+                <div class="drop-placeholder">Suelte los elementos aquí para reaccionar</div>
+                <div id="reaction-visuals"></div>
             </div>
+        </section>
 
-            <!-- Pestaña Tabla Periódica -->
-            <div id="tabla" class="tab-content">
-                <h2>Explorador de Elementos</h2>
-                <div class="periodic-grid" id="periodic-table">
-                    <!-- Generado por JS para mantenibilidad -->
-                </div>
-                <div id="element-detail" class="detail-card">
-                    Selecciona un elemento para ver su poder cotidiano.
-                </div>
-            </div>
+        <!-- Panel de Resultados -->
+        <section class="log-panel">
+            <h3>Bitácora de Reacción</h3>
+            <ul id="reaction-history" reversed>
+                <li>Sistema listo para iniciar experimentación...</li>
+            </ul>
         </section>
     </main>
 
-    <footer class="footer-status">
-        <div id="feedback-msg">Sistema listo para la investigación...</div>
+    <footer class="app-footer">
+        <button id="reset-btn" class="btn-secondary">Limpiar Laboratorio</button>
+        <p>&copy; 2026 QuimiLab Educativo - Secundaria</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
