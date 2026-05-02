@@ -3,57 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuimiLab - Laboratorio de Enlaces Químicos</title>
+    <title>QuimiLab: El Enlace Maestro</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="app-header">
-        <h1>QuimiLab: Misión Enlaces</h1>
-        <div class="stats-panel" aria-live="polite">
-            <span>Energía: <strong id="energy-points">100</strong></span>
-            <span>Rango: <strong id="user-rank">Novato</strong></span>
+    <header class="main-header">
+        <div class="header-content">
+            <h1>🧪 Misión: Enlaces Químicos</h1>
+            <div class="scoreboard" role="status" aria-live="polite">
+                <span>Puntos: <strong id="score">0</strong></span>
+                <span>Nivel: <strong id="rank">Novato</strong></span>
+            </div>
         </div>
     </header>
 
-    <main class="main-container">
-        <!-- Área de Instrucciones Pedagógicas -->
-        <section class="instructions-card" aria-labelledby="instr-title">
-            <h2 id="instr-title">Reto del Investigador</h2>
-            <p>Tu misión es formar compuestos estables. Arrastra los elementos al núcleo de reacción y observa cómo interactúan sus electrones de valencia.</p>
-        </section>
+    <main class="app-wrapper">
+        <section class="lab-zone">
+            <div class="instruction-box">
+                <h2>Laboratorio de Estabilidad</h2>
+                <p>Arrastra un **Metal** y un **No Metal** al reactor para crear un enlace iónico, o dos **No Metales** para uno covalente.</p>
+            </div>
 
-        <!-- Laboratorio Interactivo -->
-        <section class="lab-area">
-            <div class="element-shelf" id="element-palette">
-                <h3>Elementos Disponibles</h3>
-                <div class="elements-grid">
-                    <button class="element-item metal" data-element="Na" draggable="true" aria-label="Sodio">Na</button>
-                    <button class="element-item non-metal" data-element="Cl" draggable="true" aria-label="Cloro">Cl</button>
-                    <button class="element-item metal" data-element="Mg" draggable="true" aria-label="Magnesio">Mg</button>
-                    <button class="element-item non-metal" data-element="O" draggable="true" aria-label="Oxígeno">O</button>
+            <div class="workspace">
+                <!-- Estante de Elementos -->
+                <div class="element-shelf" id="shelf">
+                    <div class="element metal" draggable="true" data-type="metal" data-name="Sodio" data-symbol="Na">Na</div>
+                    <div class="element metal" draggable="true" data-type="metal" data-name="Magnesio" data-symbol="Mg">Mg</div>
+                    <div class="element non-metal" draggable="true" data-type="non-metal" data-name="Cloro" data-symbol="Cl">Cl</div>
+                    <div class="element non-metal" draggable="true" data-type="non-metal" data-name="Oxígeno" data-symbol="O">O</div>
+                </div>
+
+                <!-- Cámara de Reacción -->
+                <div class="reactor-core" id="drop-zone">
+                    <div class="core-placeholder">Zona de Reacción</div>
+                    <div id="reaction-display" class="reaction-display"></div>
                 </div>
             </div>
+        </section>
 
-            <div class="reaction-chamber" id="drop-zone" role="region" aria-label="Cámara de reacción">
-                <div class="drop-placeholder">Suelte los elementos aquí para reaccionar</div>
-                <div id="reaction-visuals"></div>
+        <aside class="log-panel">
+            <h3>Bitácora de Investigación</h3>
+            <div id="feedback-log" class="log-content">
+                <p class="msg-info">Esperando reactivos...</p>
             </div>
-        </section>
-
-        <!-- Panel de Resultados -->
-        <section class="log-panel">
-            <h3>Bitácora de Reacción</h3>
-            <ul id="reaction-history" reversed>
-                <li>Sistema listo para iniciar experimentación...</li>
-            </ul>
-        </section>
+            <button id="clear-btn" class="btn-reset">Limpiar Reactor</button>
+        </aside>
     </main>
 
-    <footer class="app-footer">
-        <button id="reset-btn" class="btn-secondary">Limpiar Laboratorio</button>
-        <p>&copy; 2026 QuimiLab Educativo - Secundaria</p>
-    </footer>
-
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
