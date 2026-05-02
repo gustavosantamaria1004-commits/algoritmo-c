@@ -3,51 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuimiLab: El Enlace Maestro</title>
+    <title>QuimiLab 8.º - Arquitectos de la Materia</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Encabezado inspirado en InfoLab -->
     <header class="main-header">
-        <div class="header-content">
-            <h1>🧪 Misión: Enlaces Químicos</h1>
-            <div class="scoreboard" role="status" aria-live="polite">
-                <span>Puntos: <strong id="score">0</strong></span>
-                <span>Nivel: <strong id="rank">Novato</strong></span>
-            </div>
+        <div class="logo">
+            <span class="icon">⬢</span> InfoQuim 8.º
         </div>
+        <nav class="top-nav">
+            <button class="nav-link active" onclick="openTab(event, 'inicio')">⚛️ Átomo</button>
+            <button class="nav-link" onclick="openTab(event, 'modelos')">🔭 Modelos</button>
+            <button class="nav-link" onclick="openTab(event, 'tabla')">📅 Tabla</button>
+            <button class="nav-link" onclick="openTab(event, 'enlaces')">🔗 Enlaces</button>
+            <button class="nav-link highlight" onclick="openTab(event, 'simulador')">Simulador Pro</button>
+        </nav>
     </header>
 
-    <main class="app-wrapper">
-        <section class="lab-zone">
-            <div class="instruction-box">
-                <h2>Laboratorio de Estabilidad</h2>
-                <p>Arrastra un **Metal** y un **No Metal** al reactor para crear un enlace iónico, o dos **No Metales** para uno covalente.</p>
-            </div>
-
-            <div class="workspace">
-                <!-- Estante de Elementos -->
-                <div class="element-shelf" id="shelf">
-                    <div class="element metal" draggable="true" data-type="metal" data-name="Sodio" data-symbol="Na">Na</div>
-                    <div class="element metal" draggable="true" data-type="metal" data-name="Magnesio" data-symbol="Mg">Mg</div>
-                    <div class="element non-metal" draggable="true" data-type="non-metal" data-name="Cloro" data-symbol="Cl">Cl</div>
-                    <div class="element non-metal" draggable="true" data-type="non-metal" data-name="Oxígeno" data-symbol="O">O</div>
-                </div>
-
-                <!-- Cámara de Reacción -->
-                <div class="reactor-core" id="drop-zone">
-                    <div class="core-placeholder">Zona de Reacción</div>
-                    <div id="reaction-display" class="reaction-display"></div>
+    <main>
+        <!-- Hero Section con estilo de Cuadrícula (Grid) -->
+        <section id="inicio" class="tab-content active hero-section">
+            <div class="grid-overlay"></div>
+            <div class="container">
+                <span class="badge">ESTRUCTURA DE LA MATERIA</span>
+                <h1>Arquitectos de la Materia</h1>
+                <p class="hero-text">
+                    Exploraremos los componentes fundamentales del universo, las partículas subatómicas y cómo se organizan para formar todo lo que conoces en la Institución Educativa.
+                </p>
+                
+                <div class="info-card-mini">
+                    <div class="mini-icon">🔬</div>
+                    <div class="mini-content">
+                        <span class="label">EQUIPO DE INVESTIGACIÓN</span>
+                        <span class="value">Grado 8.º (Secundaria)</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <aside class="log-panel">
-            <h3>Bitácora de Investigación</h3>
-            <div id="feedback-log" class="log-content">
-                <p class="msg-info">Esperando reactivos...</p>
+        <!-- Pestaña de Contenido: Modelos -->
+        <section id="modelos" class="tab-content container section-padding">
+            <h2>Evolución de los Modelos Atómicos</h2>
+            <div class="content-grid">
+                <article class="card">
+                    <h3>Dalton</h3>
+                    <p>La esfera sólida e indivisible. El inicio de la teoría moderna.</p>
+                </article>
+                <article class="card">
+                    <h3>Thomson</h3>
+                    <p>El "budín de pasas": descubrimiento del electrón.</p>
+                </article>
+                <article class="card">
+                    <h3>Bohr</h3>
+                    <p>Niveles de energía y órbitas circulares definidas.</p>
+                </article>
             </div>
-            <button id="clear-btn" class="btn-reset">Limpiar Reactor</button>
-        </aside>
+        </section>
+
+        <!-- Pestaña de Contenido: Simulador -->
+        <section id="simulador" class="tab-content container section-padding">
+            <h2>Laboratorio de Partículas</h2>
+            <p>Configura tu átomo y observa su estabilidad.</p>
+            <div class="sim-placeholder">
+                <p>[ El simulador interactivo se cargará aquí ]</p>
+                <button class="btn-action">Iniciar Escaneo</button>
+            </div>
+        </section>
     </main>
 
     <script src="script.js"></script>
