@@ -1,0 +1,124 @@
+:root {
+    --bg-space: #0b0e14;
+    --panel-bg: #1a1f29;
+    --accent-blue: #00d2ff;
+    --accent-green: #39ff14;
+    --text-main: #e0e0e0;
+    --transition: all 0.3s ease;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-space);
+    color: var(--text-main);
+    overflow: hidden;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: var(--panel-bg);
+    border-bottom: 2px solid var(--accent-blue);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+}
+
+.app-container {
+    display: flex;
+    height: calc(100vh - 70px);
+}
+
+.side-nav {
+    width: 200px;
+    background: rgba(26, 31, 41, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--text-main);
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.nav-btn:hover, .nav-btn.active {
+    background: var(--accent-blue);
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 10px var(--accent-blue);
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.5s; }
+
+/* Simulador Átomo */
+.sim-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    background: var(--panel-bg);
+    padding: 2rem;
+    border-radius: 15px;
+}
+
+.atom-visualizer {
+    height: 300px;
+    border: 2px dashed #444;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nucleus {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #ff4b2b, #ff416c);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.orbit {
+    position: absolute;
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Grid de Tabla Periódica */
+.periodic-grid {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    gap: 4px;
+    margin-bottom: 2rem;
+}
+
+.el-card {
+    background: #252a35;
+    padding: 5px;
+    text-align: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: 1px solid #333;
+}
+
+.el-card:hover { border-color: var(--accent-green); }
