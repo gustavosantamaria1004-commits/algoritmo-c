@@ -1,117 +1,107 @@
 /**
- * QuimiLab - Motor de Reacciones
- * Enfoque: Secundaria - Enlaces Químicos
+ * LÓGICA DE QUIMILAB: ENLACES
+ * Mantenible, escalable y accesible.
  */
 
-const QuimiLab = (() => {
-    // Estado de la aplicación
-    const state = {
-        currentElements: [],
-        energy: 100,
-        score: 0
-    };
+const QuimiLab = {
+    state: {
+        score: 0,
+        elementsInReactor: [],
+        isLocked: false
+    },
 
-    // Diccionario de datos químicos (Abstracción didáctica)
-    const elementData = {
-        'Na': { type: 'metal', valencia: 1 },
-        'Cl': { type: 'non-metal', valencia: 7 },
-        'Mg': { type: 'metal', valencia: 2 },
-        'O':  { type: 'non-metal', valencia: 6 }
-    };
+    init() {
+        this.cacheDOM();
+        this.bindEvents();
+    },
 
-    const init = () => {
-        setupEventListeners();
-    };
+    cacheDOM() {
+        this.shelf = document.getElementById('shelf');
+        this.reactor = document.getElementById('drop-zone');
+        this.display = document.getElementById('reaction-display');
+        this.log = document.getElementById('feedback-log');
+        this.scoreEl = document.getElementById('score');
+        this.rankEl = document.getElementById('rank');
+        this.clearBtn = document.getElementById('clear-btn');
+    },
 
-    const setupEventListeners = () => {
-        const elements = document.querySelectorAll('.element-item');
-        const dropZone = document.getElementById('drop-zone');
-
+    bindEvents() {
+        // Drag and Drop API
+        const elements = document.querySelectorAll('.element');
         elements.forEach(el => {
-            el.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', e.target.dataset.element);
+            el.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', JSON.stringify(el.dataset));
             });
         });
 
-        dropZone.addEventListener('dragover', (e) => e.preventDefault());
+        this.reactor.addEventListener('dragover', e => e.preventDefault());
+        this.reactor.addEventListener('drop', e => this.handleDrop(e));
+        this.clearBtn.addEventListener('click', () => this.resetReactor());
+    },
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const symbol = e.dataTransfer.getData('text/plain');
-            handleElementDrop(symbol);
-        });
+    handleDrop(e) {
+        e.preventDefault();
+        if (this.state.isLocked || this.state.elementsInReactor.length >= 2) return;
 
-        document.getElementById('reset-btn').addEventListener('click', resetLab);
-    };
+        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        this.state.elementsInReactor.push(data);
+        this.updateDisplay();
 
-    const handleElementDrop = (symbol) => {
-        if (state.currentElements.length < 2) {
-            state.currentElements.push(symbol);
-            updateVisuals();
-            
-            if (state.currentElements.length === 2) {
-                processReaction();
-            }
+        if (this.state.elementsInReactor.length === 2) {
+            this.evaluateReaction();
         }
-    };
+    },
 
-    const processReaction = () => {
-        const [el1, el2] = state.currentElements;
-        const data1 = elementData[el1];
-        const data2 = elementData[el2];
+    updateDisplay() {
+        this.display.innerHTML = this.state.elementsInReactor
+            .map(el => `<span class="atom-preview">${el.symbol}</span>`)
+            .join(' + ');
+    },
+
+    evaluateReaction() {
+        this.state.isLocked = true;
+        const [a, b] = this.state.elementsInReactor;
         
-        let resultMsg = "";
         let success = false;
+        let type = "";
 
-        // Lógica Pedagógica de Enlaces
-        if (data1.type !== data2.type) {
-            resultMsg = `¡Éxito! Enlace IÓNICO formado entre ${el1} y ${el2}.`;
+        // LÓGICA DIDÁCTICA
+        if ((a.type === 'metal' && b.type === 'non-metal') || (a.type === 'non-metal' && b.type === 'metal')) {
             success = true;
-        } else if (data1.type === 'non-metal' && data2.type === 'non-metal') {
-            resultMsg = `¡Éxito! Enlace COVALENTE formado entre ${el1} y ${el2}.`;
+            type = "IÓNICO (Transferencia de electrones)";
+        } else if (a.type === 'non-metal' && b.type === 'non-metal') {
             success = true;
-        } else {
-            resultMsg = `Falla: Los metales no suelen formar enlaces estables entre sí.`;
-            success = false;
+            type = "COVALENTE (Comparten electrones)";
         }
 
-        updateLog(resultMsg, success);
-        if (success) updateProgress();
-        
-        // Pequeña pausa para permitir que el estudiante vea el resultado antes de limpiar
-        setTimeout(resetLab, 3000);
-    };
+        if (success) {
+            this.addLog(`✅ ¡Compuesto creado! Enlace ${type}`, 'success');
+            this.updateScore(10);
+        } else {
+            this.addLog(`❌ Los metales puros no suelen formar enlaces iónicos/covalentes entre sí.`, 'error');
+        }
 
-    const updateLog = (msg, success) => {
-        const history = document.getElementById('reaction-history');
-        const entry = document.createElement('li');
-        entry.textContent = msg;
-        entry.style.color = success ? 'green' : 'red';
-        entry.style.fontWeight = 'bold';
-        history.prepend(entry);
-    };
+        setTimeout(() => this.resetReactor(), 3000);
+    },
 
-    const updateProgress = () => {
-        state.score += 20;
-        state.energy = Math.max(0, state.energy - 5);
-        document.getElementById('energy-points').textContent = state.energy;
-        if(state.score > 40) document.getElementById('user-rank').textContent = 'Investigador';
-    };
+    addLog(msg, status) {
+        const p = document.createElement('p');
+        p.className = `msg-${status}`;
+        p.textContent = `> ${msg}`;
+        this.log.prepend(p);
+    },
 
-    const updateVisuals = () => {
-        const chamber = document.getElementById('reaction-visuals');
-        chamber.innerHTML = state.currentElements.map(el => 
-            `<div class="atom-preview">${el}</div>`
-        ).join(' + ');
-    };
+    updateScore(pts) {
+        this.state.score += pts;
+        this.scoreEl.textContent = this.state.score;
+        if (this.state.score >= 30) this.rankEl.textContent = "Investigador";
+    },
 
-    const resetLab = () => {
-        state.currentElements = [];
-        document.getElementById('reaction-visuals').innerHTML = "";
-    };
+    resetReactor() {
+        this.state.elementsInReactor = [];
+        this.state.isLocked = false;
+        this.display.innerHTML = "";
+    }
+};
 
-    return { init };
-})();
-
-// Iniciar al cargar el DOM
-document.addEventListener('DOMContentLoaded', QuimiLab.init);
+document.addEventListener('DOMContentLoaded', () => QuimiLab.init());
